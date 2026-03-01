@@ -1,4 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
+import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-analytics.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged }
 from "https://www.gstatic.com/firebasejs/12.10.0/firebase-auth.js";
 import { getFirestore, doc, setDoc, getDoc }
@@ -10,91 +11,94 @@ const firebaseConfig = {
   projectId: "resqlink-73b57",
   storageBucket: "resqlink-73b57.firebasestorage.app",
   messagingSenderId: "1089979527311",
-  appId: "1:1089979527311:web:978de63a5d76348d7440fa"
+  appId: "1:1089979527311:web:978de63a5d76348d7440fa",
+  measurementId: "G-JVHWVP44H4"
 };
 
 const app = initializeApp(firebaseConfig);
+getAnalytics(app);
+
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-const screens=document.querySelectorAll(".screen");
-function show(id){screens.forEach(s=>s.classList.remove("active"));document.getElementById(id).classList.add("active");}
-setTimeout(()=>show("login"),2000);
+function popup(msg){
+const p=document.getElementById("popup");
+if(!p)return;
+p.innerText=msg;
+p.style.display="block";
+setTimeout(()=>p.style.display="none",3000);
+}
 
-// Navigation
-goRegister.onclick=()=>show("register");
-goLogin.onclick=()=>show("login");
-
-// Register
+/* REGISTER */
+if(document.getElementById("registerBtn")){
 registerBtn.onclick=async()=>{
 try{
-const user=await createUserWithEmailAndPassword(auth,regEmail.value.trim(),regPassword.value.trim());
+const user=await createUserWithEmailAndPassword(auth,regEmail.value,regPassword.value);
 await setDoc(doc(db,"users",user.user.uid),{
-name:regName.value.trim(),
-guardian:regGuardian.value.trim()
+name:regName.value,
+guardian:regGuardian.value
 });
-alert("✔ Registration Completed");
-show("login");
-}catch(e){alert(e.code);}
+popup("✔ Account Registered");
+setTimeout(()=>location.href="index.html",1500);
+}catch(e){popup(e.code);}
 };
+}
 
-// Login
+/* LOGIN */
+if(document.getElementById("loginBtn")){
 loginBtn.onclick=async()=>{
 loginError.innerText="";
 try{
-await signInWithEmailAndPassword(auth,loginEmail.value.trim(),loginPassword.value.trim());
+await signInWithEmailAndPassword(auth,loginEmail.value,loginPassword.value);
+popup("✔ Login Successful");
+setTimeout(()=>location.href="dashboard.html",1000);
 }catch(e){
-loginError.innerText="Invalid credentials";
+loginError.innerText="Invalid Credentials";
 }
 };
+}
 
-// Auth listener
+/* DASHBOARD */
+if(document.getElementById("greeting")){
 onAuthStateChanged(auth,async user=>{
-if(!user)return;
+if(!user){location.href="index.html";return;}
 const snap=await getDoc(doc(db,"users",user.uid));
-if(!snap.exists()){alert("User data missing");return;}
 greeting.innerText="Welcome, "+snap.data().name;
-show("dashboard");
 initLocation();
 });
+}
 
-// Logout
-logoutBtn.onclick=()=>signOut(auth).then(()=>show("login"));
+/* LOGOUT */
+if(document.getElementById("logoutBtn")){
+logoutBtn.onclick=()=>signOut(auth).then(()=>location.href="index.html");
+}
 
-// Location
+/* LOCATION */
 function initLocation(){
 navigator.geolocation.getCurrentPosition(pos=>{
 window.lat=pos.coords.latitude;
 window.lng=pos.coords.longitude;
 mapFrame.src=`https://maps.google.com/maps?q=${lat},${lng}&z=15&output=embed`;
-},{enableHighAccuracy:true});
+});
 }
 
-// SOS
+/* SOS */
+if(document.getElementById("sosBtn")){
 sosBtn.onclick=async()=>{
 const user=auth.currentUser;
-if(!user||!window.lat||!window.lng)return alert("Location not ready");
 const snap=await getDoc(doc(db,"users",user.uid));
 const guardian=snap.data().guardian;
 const msg=`🚨 EMERGENCY\nhttps://www.google.com/maps?q=${lat},${lng}`;
 window.location.href=`sms:${guardian}?body=${encodeURIComponent(msg)}`;
-addActivity("SOS Sent");
 };
-
-// Activity
-function addActivity(text){
-const li=document.createElement("li");
-li.innerText=new Date().toLocaleTimeString()+" - "+text;
-activityList.prepend(li);
 }
 
-// Bluetooth
+/* BLUETOOTH */
+if(document.getElementById("bluetoothBtn")){
 bluetoothBtn.onclick=async()=>{
-if(!navigator.bluetooth)return alert("Bluetooth not supported");
-try{
 await navigator.bluetooth.requestDevice({acceptAllDevices:true});
 connectionDot.classList.add("connected");
 connectionText.innerText="Stick Connected";
-addActivity("Bluetooth Connected");
-}catch{}
+popup("Bluetooth Connected");
 };
+}
