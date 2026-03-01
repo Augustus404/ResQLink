@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ResQLink - Dashboard</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="popup" id="popup"></div>
+
+<div class="container">
+
+<h2 id="greeting"></h2>
+
+<div class="status">
+<div id="connectionDot" class="dot"></div>
+<span id="connectionText">Stick Not Connected</span>
+</div>
+
+<button class="primary" id="bluetoothBtn">Connect Stick</button>
+
+<div class="map">
+<iframe id="mapFrame"></iframe>
+</div>
+
+<button class="danger" id="sosBtn">🚨 SEND SOS</button>
+
+<div class="activity">
+<ul id="activityList"></ul>
+</div>
+
+<button class="ghost" id="logoutBtn">Logout</button>
+
+</div>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>
