@@ -92,6 +92,13 @@ const msg=`🚨 EMERGENCY\nhttps://www.google.com/maps?q=${lat},${lng}`;
 window.location.href=`sms:${guardian}?body=${encodeURIComponent(msg)}`;
 };
 }
+function sendNativeSMS(number, message){
+  if(window.AndroidSMS){
+    AndroidSMS.sendSMS(number, message);
+  } else {
+    alert("Not running inside Android app");
+  }
+}
 
 /* BLUETOOTH */
 if(document.getElementById("bluetoothBtn")){
