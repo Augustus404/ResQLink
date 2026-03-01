@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ResQLink</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- Loading -->
+<div id="loading" class="screen active center">
+  <h1 class="logo glow">ResQLink</h1>
+  <p>Freedom begins with safety.</p>
+  <div class="spinner"></div>
+</div>
+
+<!-- Login -->
+<div id="login" class="screen center">
+  <div class="card">
+    <h2>ResQLink</h2>
+
+    <input id="loginEmail" placeholder="Email">
+    <input type="password" id="loginPassword" placeholder="Password">
+    <p id="loginError" class="error"></p>
+
+    <button id="loginBtn">Login</button>
+    <p>No account? <span id="goRegister">Register</span></p>
+  </div>
+</div>
+
+<!-- Register -->
+<div id="register" class="screen center">
+  <div class="card">
+    <h2>Create Account</h2>
+
+    <input id="regName" placeholder="Full Name">
+    <input id="regEmail" placeholder="Email">
+    <input type="password" id="regPassword" placeholder="Password">
+    <input id="regGuardian" placeholder="Guardian Phone (+91...)">
+
+    <button id="registerBtn">Register</button>
+    <p>Already registered? <span id="goLogin">Login</span></p>
+  </div>
+</div>
+
+<!-- Dashboard -->
+<div id="dashboard" class="screen">
+  <div class="container">
+
+    <div class="topbar">
+      <h3 id="greeting"></h3>
+      <button id="logoutBtn" class="ghost">Logout</button>
+    </div>
+
+    <div class="statusCard">
+      <div id="connectionDot" class="dot"></div>
+      <span id="connectionText">Stick Not Connected</span>
+    </div>
+
+    <button id="bluetoothBtn" class="outline">Connect Bluetooth</button>
+
+    <div class="mapContainer">
+      <iframe id="mapFrame"></iframe>
+    </div>
+
+    <button id="sosBtn" class="danger">🚨 SEND SOS</button>
+
+    <div class="activity">
+      <h4>Activity Feed</h4>
+      <ul id="activityList"></ul>
+    </div>
+
+  </div>
+</div>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>
